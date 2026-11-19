@@ -1,8 +1,9 @@
-
 zerops:
+  # setup is the existing Zerops service hostname; the user's scaffold used "ubuntu".
   - setup: ubuntu
     run:
-      base: docker@latest
+      # Docker runtime for running the published OMID image.
+      base: docker@26.1
 
       prepareCommands:
         - docker image pull ghcr.io/omidiran5080/omidiran-3x-ui:latest
