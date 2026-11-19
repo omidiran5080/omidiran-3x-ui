@@ -1,10 +1,46 @@
+
 zerops:
-  - setup: docker
+  - setup: ubuntu
     run:
       base: docker@latest
+
       prepareCommands:
-        - docker image pull ghcr.io/omidiran5080/omidiran-3x-ui:latest
-      start: docker run --network=host ghcr.io/omidiran5080/omidiran-3x-ui:latest
+        - docker image pull ghcr.io/omidiran-gaming/omid-3x-ui:latest
+
+      start: |
+        set -eu
+        mkdir -p /mnt/omid-data/db /mnt/omid-data/cert /mnt/omid-data/acme
+        docker rm -f omid-3x-ui >/dev/null 2>&1 || true
+        exec docker run \
+          --rm \
+          --name omid-3x-ui \
+          --pull=never \
+          --network=host \
+          -e TZ=Asia/Tehran \
+          -e PORT=2053 \
+          -e XUI_PORT=8080 \
+          -e XUI_DB_TYPE=sqlite \
+          -e XUI_DB_FOLDER=/etc/x-ui \
+          -e XUI_ENABLE_FAIL2BAN=false \
+          -e XUI_SKIP_HSTS=true \
+          -e XUI_SUB_PUBLIC_HTTPS=true \
+          -e XRAY_VMESS_AEAD_FORCED=false \
+          -v /mnt/omid-data/db:/etc/x-ui \
+          -v /mnt/omid-data/cert:/root/cert \
+          -v /mnt/omid-data/acme:/root/.acme.sh \
+          ghcr.io/omidiran-gaming/omid-3x-ui:latest
+
       ports:
         - port: 2053
+          protocol: TCP
           httpSupport: true
+
+      healthCheck:
+        httpGet:
+          port: 2053
+          path: /healthz
+
+      volume:
+        hostname: data
+        mountPath: /mnt/omid-data
+        readOnly: false
