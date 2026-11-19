@@ -5,7 +5,7 @@ zerops:
       base: docker@latest
 
       prepareCommands:
-        - docker image pull ghcr.io/omidiran-gaming/omid-3x-ui:latest
+        - docker image pull ghcr.io/omidiran5080/omidiran-3x-ui:latest
 
       start: |
         set -eu
@@ -28,7 +28,7 @@ zerops:
           -v /mnt/omid-data/db:/etc/x-ui \
           -v /mnt/omid-data/cert:/root/cert \
           -v /mnt/omid-data/acme:/root/.acme.sh \
-          ghcr.io/omidiran-gaming/omid-3x-ui:latest
+          ghcr.io/omidiran5080/omidiran-3x-ui:latest
 
       ports:
         - port: 2053
